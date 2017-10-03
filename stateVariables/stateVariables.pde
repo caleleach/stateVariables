@@ -1,10 +1,11 @@
 int state;
-
+PImage ship;
+int shipFrame;
 
 void setup() {
  state = 1;
  size(800,800); 
- 
+ ship = loadImage("ship_00.png");
 }
 
 void draw() {
@@ -53,11 +54,15 @@ void isButtonPressed() {
 //start of the game
 void game(){
   if (state == 2){
-    background(255);
-    
+    background(0);
+    ship();
   }
 }
 //imports the ship sprite(s)
 void ship(){
-  
+  if (shipFrame % 20){
+    shipFrame ++;
+    imageMode(CENTER);
+    image(ship, width/2,height/2, ship.width*3,ship.height*3);
+  }
 }
