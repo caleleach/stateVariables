@@ -1,16 +1,32 @@
 int state;
-PImage ship;
-int shipFrame;
+PImage[] ship = new PImage[23];
+int shipCounter;
+int shipX,shipY;
+PImage[] medal = new PImage[5];
+int medalCounter;
 
 void setup() {
  state = 1;
  size(800,800); 
- ship = loadImage("ship_00.png");
+ shipCounter = 0;
+ shipX = width/2;
+ shipY = height - 40;
+ medalCounter = 0;
+ 
+ //animates ship
+ for (int i=0; i < ship.length; i++) {
+   ship[i] = loadImage( i + ".png");
+ }
+ //medal animation
+ for (int m=0; m < medal.length; m++){
+    medal[m] = loadImage( "m" + m  + ".png");
+ }
 }
 
 void draw() {
   menu();
   game();
+  endScreen();
 }
 
 //main menu
@@ -56,13 +72,57 @@ void game(){
   if (state == 2){
     background(0);
     ship();
+    shipMove();
   }
 }
-//imports the ship sprite(s)
+//shows ship
 void ship(){
-  if (shipFrame % 20){
-    shipFrame ++;
-    imageMode(CENTER);
-    image(ship, width/2,height/2, ship.width*3,ship.height*3);
+  imageMode(CENTER);
+  image(ship[shipCounter], shipX, shipY);
+  
+  if (frameCount % 5 == 0) {
+    shipCounter++;
+    shipCounter = shipCounter % ship.length;
+    if (shipCounter == 0){
+      shipCounter = shipCounter + 14;
+    }
+  }
+}
+//ship movement
+void shipMove(){
+  if (keyPressed == true){
+    //move up
+    if (key == 'w'|| key == 'W'){
+      shipY = shipY - 5;
+    }
+    //move down
+    else if (key == 's' || key == 'S'){
+      shipY = shipY + 5; 
+    }
+    //move left
+    else if (key == 'a' || key == 'A'){
+      shipX = shipX - 5; 
+    }
+    else if (key == 'd' || key == 'D'){
+      shipX = shipX + 5; 
+    }
+  }
+}
+//------------------------------------------------------------------------------------
+//shows the final screen
+void endScreen(){
+  if (state == 3){
+    background(163,163,163);
+    score();
+  }
+}
+
+void score(){
+  imageMode(CENTER);
+  image(medal[medalCounter], width/2, height/2);
+  
+  if (frameCount % 10 == 0) {
+    medalCounter++;
+    medalCounter = medalCounter % medal.length;
   }
 }
