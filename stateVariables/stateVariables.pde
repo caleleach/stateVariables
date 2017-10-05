@@ -1,9 +1,13 @@
+//global variables
 int state;
 PImage[] ship = new PImage[23];
 int shipCounter;
 int shipX,shipY;
 PImage[] medal = new PImage[5];
 int medalCounter;
+int points;
+PImage eagle;
+float debris;
 
 void setup() {
  state = 1;
@@ -12,6 +16,7 @@ void setup() {
  shipX = width/2;
  shipY = height - 40;
  medalCounter = 0;
+ points = 0;
  
  //animates ship
  for (int i=0; i < ship.length; i++) {
@@ -32,7 +37,7 @@ void draw() {
 //main menu
 void menu() {
   if (state == 1){
-    background(255);
+    background(0);
     button();
     isButtonPressed();
   }
@@ -42,26 +47,21 @@ void menu() {
 //button
 void button() {
   //what color the button should be and if the mouse is on the button
-  if (mouseX <= 600 && mouseX >= 200 && mouseY <= 500 && mouseY >= 300){
-    fill(255,0,0);
-    rectMode(CENTER);
-    rect(width/2,height/2, 400,200);
+  if (mouseX <= 470 && mouseX >= 330 && mouseY <= 444 && mouseY >= 388) {
+    eagle = loadImage("eagle_1.png");
+    imageMode(CENTER);
+    image(eagle, width/2, height/2, eagle.width*2, eagle.height*2);
   }
-  else{
-    fill(0);
-    rectMode(CENTER);
-    rect(width/2,height/2, 400,200);
+  else {
+    eagle = loadImage("eagle_0.png");
+    imageMode(CENTER);
+    image(eagle, width/2, height/2, eagle.width*2, eagle.height*2);
   }
-  //Start game text
-  fill(255);
-  textMode(CENTER);
-  textSize(40);
-  text("Start Game", width/2 - 100,height/2);
-}
+}//button X is 70 button Y is 28
 //checks if the main menu button has been pressed
 void isButtonPressed() {
   if (state == 1){
-    if (mousePressed && mouseX <= 600 && mouseX >= 200 && mouseY <= 500 && mouseY >= 300){
+    if (mousePressed && mouseX <= 470 && mouseX >= 330 && mouseY <= 444 && mouseY >= 388){//set it up so that you can change the size and the button will still work
       state = 2;
     }
   }
@@ -108,6 +108,17 @@ void shipMove(){
     }
   }
 }
+//asteroids/objects
+void debris(){
+  
+}
+
+//keeps track of points
+void numberOfPoints(){
+  
+}
+
+
 //------------------------------------------------------------------------------------
 //shows the final screen
 void endScreen(){
@@ -116,13 +127,35 @@ void endScreen(){
     score();
   }
 }
-
+//shows your score
 void score(){
   imageMode(CENTER);
   image(medal[medalCounter], width/2, height/2);
   
+  //finds the medal you got
   if (frameCount % 10 == 0) {
     medalCounter++;
     medalCounter = medalCounter % medal.length;
+    
+    //1st
+    if (medalCounter == 0 && points >= 20){
+      medalCounter = medalCounter + 0;
+    }
+    //2nd
+    else if (medalCounter == 0 && points < 20 && points >= 15) {
+      medalCounter = medalCounter + 1;
+    }
+    //3rd
+    else if (medalCounter == 0 && points < 15 && points >= 10) {
+      medalCounter = medalCounter + 2;
+    }
+    //4th
+    else if (medalCounter == 0 && points < 10 && points >= 5) {
+      medalCounter = medalCounter + 3;
+    }
+    //5th
+    else if (medalCounter == 0 && points < 5){
+      medalCounter = medalCounter + 4;
+    }
   }
 }
