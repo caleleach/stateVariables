@@ -8,6 +8,7 @@ int medalCounter;
 int points;
 PImage eagle;
 float debris;
+int menuStarX,menuStarY,ranStarX,ranStarY;
 
 void setup() {
  state = 1;
@@ -17,6 +18,8 @@ void setup() {
  shipY = height - 40;
  medalCounter = 0;
  points = 0;
+ ranStarX = (random(800));
+ ranStarY = (random(800));
  
  //animates ship
  for (int i=0; i < ship.length; i++) {
@@ -66,6 +69,13 @@ void isButtonPressed() {
     }
   }
 }
+//starts on the main menu
+void stars(){
+  fill(255);
+  rectMode(CENTER);
+  rect(2,2,menuStarX,menuStarY);
+}
+
 //-----------------------------------------------------------------------------------------------------
 //start of the game
 void game(){
