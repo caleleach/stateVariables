@@ -1,22 +1,45 @@
 //global variables
 int state;
+//ship stuff
 PImage[] ship = new PImage[23];
 int shipCounter;
-int shipX,shipY;
-PImage[] medal = new PImage[5];
+float shipX,shipY;
+float dx,dy;
+boolean movingUp,movingDown,movingRight,movingLeft;
+//medal
 int medalCounter;
 int points;
+PImage[] medal = new PImage[5];
+//button for main menu
 PImage eagle;
-float debris;
+//debris
+boolean debrisOnScreen;
+int debrisX,debrisY;
+int debrisDX,debrisDY;
+int debrisSize;
 
 void setup() {
  state = 1;
+ 
  size(800,800); 
+ 
  shipCounter = 0;
  shipX = width/2;
  shipY = height - 40;
+ dx = 5;
+ dy = 5;
+ movingUp = false;
+ movingDown = false;
+ movingRight = false;
+ movingLeft = false;
+ 
  medalCounter = 0;
  points = 0;
+ 
+ debrisOnScreen = false;
+ debrisDX = 5;
+ debrisDY = 5;
+ 
  
  //animates ship
  for (int i=0; i < ship.length; i++) {
@@ -33,7 +56,7 @@ void draw() {
   game();
   endScreen();
 }
-
+//-------------------------------------------------------------------------------------------------------------
 //main menu
 void menu() {
   if (state == 1){
@@ -41,7 +64,6 @@ void menu() {
     button();
     isButtonPressed();
   }
-  
 }
 
 //button
@@ -74,6 +96,7 @@ void game(){
     background(0);
     ship();
     shipMove();
+    debris();
   }
 }
 //shows ship
@@ -91,27 +114,69 @@ void ship(){
 }
 //ship movement
 void shipMove(){
-  if (keyPressed == true){
-    //move up
-    if (key == 'w'|| key == 'W'){
-      shipY = shipY - 5;
-    }
-    //move down
-    else if (key == 's' || key == 'S'){
-      shipY = shipY + 5; 
-    }
-    //move left
-    else if (key == 'a' || key == 'A'){
-      shipX = shipX - 5; 
-    }
-    else if (key == 'd' || key == 'D'){
-      shipX = shipX + 5; 
-    }
+  if (movingUp) {
+    shipY -= dy;
+  }
+  if (movingDown) {
+    shipY += dy; 
+  }
+  if (movingRight) {
+    shipX += dx;
+  }
+  if (movingLeft) {
+    shipX -= dx; 
   }
 }
+
+void keyPressed() {
+  if (key == 'w' || key == 'W') {
+    movingUp = true; 
+  }
+  if (key == 's' || key == 'S') {
+    movingDown = true; 
+  }
+  if (key == 'a' || key == 'A') {
+    movingLeft = true; 
+  }
+  if (key == 'd' || key == 'D') {
+    movingRight = true; 
+  }
+}
+
+void keyReleased() {
+  if (key == 'w' || key == 'W') {
+    movingUp = false; 
+  }
+  if (key == 's' || key == 'S') {
+    movingDown = false; 
+  }
+  if (key == 'a' || key == 'A') {
+    movingLeft = false; 
+  }
+  if (key == 'd' || key == 'D') {
+    movingRight = false; 
+  }
+}
+
 //asteroids/objects
 void debris(){
-  
+ //spawns debris
+ if (debrisOnScreen == false) {
+   debrisSize = int(random(20,120));
+   debrisDY = int(random(5,10));
+   debrisX = int(random(width));
+   debrisY = 0;
+   debrisOnScreen = true;
+ }
+ //move debris
+  if (debrisOnScreen == true){
+    fill(163);
+    ellipse(debrisX,debrisY,debrisSize,debrisSize);
+    debrisY += debrisDY;
+    if (debrisY >= 800) {
+      debrisOnScreen = false; 
+    }
+  }
 }
 
 //keeps track of points
