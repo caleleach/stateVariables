@@ -7,9 +7,8 @@ float shipX,shipY;
 float dx,dy;
 boolean movingUp,movingDown,movingRight,movingLeft;
 //medal
-int medalCounter;
 int points;
-PImage[] medal = new PImage[5];
+PImage medal;
 //button for main menu
 PImage eagle;
 //debris
@@ -17,6 +16,7 @@ boolean debrisOnScreen;
 int debrisX,debrisY;
 int debrisDX,debrisDY;
 int debrisSize;
+int debrisCounter;
 
 void setup() {
  state = 1;
@@ -33,21 +33,17 @@ void setup() {
  movingRight = false;
  movingLeft = false;
  
- medalCounter = 0;
  points = 0;
  
  debrisOnScreen = false;
  debrisDX = 5;
  debrisDY = 5;
+ debrisCounter = 0;
  
  
  //animates ship
  for (int i=0; i < ship.length; i++) {
    ship[i] = loadImage( i + ".png");
- }
- //medal animation
- for (int m=0; m < medal.length; m++){
-    medal[m] = loadImage( "m" + m  + ".png");
  }
 }
 
@@ -95,8 +91,12 @@ void game(){
   if (state == 2){
     background(0);
     ship();
+    hitBox();
     shipMove();
     debris();
+    if (debrisCounter == 20) {
+      state = 3; 
+    }
   }
 }
 //shows ship
@@ -168,60 +168,66 @@ void debris(){
    debrisY = 0;
    debrisOnScreen = true;
  }
- //move debris
+ //spawn debris
   if (debrisOnScreen == true){
     fill(163);
+    ellipseMode(CENTER);
     ellipse(debrisX,debrisY,debrisSize,debrisSize);
     debrisY += debrisDY;
+    collision();
     if (debrisY >= 800) {
-      debrisOnScreen = false; 
+      debrisOnScreen = false;
+      debrisCounter += 1;
+      points += 1;
     }
   }
 }
-
-//keeps track of points
-void numberOfPoints(){
-  
+//the ship's hit box
+void hitBox(){
+  noStroke();
+  noFill();
+  rectMode(CENTER);
+  rect(shipX,shipY,70,68);
 }
 
+//detects if the ship hits and asteroid
+void collision() {
+  if (debrisX + debrisSize/4 >= shipX - 32 && debrisX - debrisSize/4 <= shipX + 32 && debrisY + debrisSize/4 >= shipY - 35 && debrisY - debrisSize/4 <= shipY + 35){
+    state = 3;
+  }
+}
 
 //------------------------------------------------------------------------------------
 //shows the final screen
 void endScreen(){
   if (state == 3){
-    background(163,163,163);
+    background(0);
     score();
   }
 }
 //shows your score
 void score(){
-  imageMode(CENTER);
-  image(medal[medalCounter], width/2, height/2);
-  
   //finds the medal you got
-  if (frameCount % 10 == 0) {
-    medalCounter++;
-    medalCounter = medalCounter % medal.length;
-    
     //1st
-    if (medalCounter == 0 && points >= 20){
-      medalCounter = medalCounter + 0;
-    }
-    //2nd
-    else if (medalCounter == 0 && points < 20 && points >= 15) {
-      medalCounter = medalCounter + 1;
-    }
-    //3rd
-    else if (medalCounter == 0 && points < 15 && points >= 10) {
-      medalCounter = medalCounter + 2;
-    }
-    //4th
-    else if (medalCounter == 0 && points < 10 && points >= 5) {
-      medalCounter = medalCounter + 3;
-    }
-    //5th
-    else if (medalCounter == 0 && points < 5){
-      medalCounter = medalCounter + 4;
-    }
+  if (points >= 20) {
+    medal = loadImage("m0.png");
   }
+    //2nd
+  else if (points < 20 && points >= 15) {
+    medal = loadImage("m1.png");
+  }
+    //3rd
+  else if (points < 15 && points >= 10) {
+    medal = loadImage("m2.png");
+  }
+    //4th
+  else if (points < 10 && points >= 5) {
+    medal = loadImage("m3.png");
+  }
+    //5th
+  else if (points < 5) {
+    medal = loadImage("m4.png");
+  }
+  imageMode(CENTER);
+  image(medal, width/2, height/2, medal.width*2, medal.height*2);
 }
