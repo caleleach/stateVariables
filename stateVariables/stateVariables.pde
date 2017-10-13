@@ -17,6 +17,12 @@ int debrisX,debrisY;
 int debrisDX,debrisDY;
 int debrisSize;
 int debrisCounter;
+//difficulty button
+boolean hardOrEasy;
+int hardModeX;
+int hardModeY;
+boolean triggerMouse;
+int debrisSpeed;
 
 void setup() {
  state = 1;
@@ -40,6 +46,8 @@ void setup() {
  debrisDY = 5;
  debrisCounter = 0;
  
+ hardOrEasy = false;
+ triggerMouse = false;
  
  //animates ship
  for (int i=0; i < ship.length; i++) {
@@ -59,6 +67,7 @@ void menu() {
     background(0);
     button();
     isButtonPressed();
+    hardOrEasy();
   }
 }
 
@@ -82,6 +91,44 @@ void isButtonPressed() {
     if (mousePressed && mouseX <= 470 && mouseX >= 330 && mouseY <= 444 && mouseY >= 388){//set it up so that you can change the size and the button will still work
       state = 2;
     }
+  }
+}
+//pick difficulty
+void hardOrEasy() {
+  if (mousePressed && mouseX >= width/2 - 50 && mouseX <= width/2 + 50 && mouseY >= height/2 + 100 -25 && mouseY <= height/2 + 100 + 25){
+    triggerMouse = true;
+  }
+  difficultyButton();
+}
+
+void difficultyButton(){
+  hardModeX = int(random(width/2 - 5, width/2 + 5));
+  hardModeY = int(random(height/2 + 105, height/2 + 95));
+  if (hardOrEasy == false){
+    fill(255,0,0);
+    stroke(229,207,0);
+    rectMode(CENTER);
+    rect(width/2,height/2 + 100, 100, 50);
+    fill(229,207,0);
+    textMode(CENTER);
+    textSize(15);
+    text("Easy Mode",width/2 - 35,height/2 + 100);
+  }
+  else if (hardOrEasy == true){
+    fill(255,0,0);
+    stroke(229,207,0);
+    rectMode(CENTER);
+    rect(hardModeX,hardModeY, 100, 50);
+    fill(229,207,0);
+    textMode(CENTER);
+    textSize(15);
+    text("Hard Mode",hardModeX - 35,hardModeY);
+  }
+}
+
+void mouseReleased(){
+  if (triggerMouse == true) {
+    hardOrEasy = !hardOrEasy; 
   }
 }
 
@@ -160,10 +207,13 @@ void keyReleased() {
 
 //asteroids/objects
 void debris(){
+  debrisSpeed();
  //spawns debris
  if (debrisOnScreen == false) {
    debrisSize = int(random(20,120));
-   debrisDY = int(random(5,10));
+   //hard mode change the 15 to 90
+   debrisDY = int(random(10,debrisSpeed));
+   //
    debrisX = int(random(width));
    debrisY = 0;
    debrisOnScreen = true;
@@ -175,7 +225,7 @@ void debris(){
     ellipse(debrisX,debrisY,debrisSize,debrisSize);
     debrisY += debrisDY;
     collision();
-    if (debrisY >= 800) {
+    if (debrisY >= 810) {
       debrisOnScreen = false;
       debrisCounter += 1;
       points += 1;
@@ -194,6 +244,14 @@ void hitBox(){
 void collision() {
   if (debrisX + debrisSize/4 >= shipX - 32 && debrisX - debrisSize/4 <= shipX + 32 && debrisY + debrisSize/4 >= shipY - 35 && debrisY - debrisSize/4 <= shipY + 35){
     state = 3;
+  }
+}
+void debrisSpeed(){
+  if (hardOrEasy == false){
+    debrisSpeed = 15;
+  }
+  else if (hardOrEasy == true){
+    debrisSpeed = 90;
   }
 }
 
